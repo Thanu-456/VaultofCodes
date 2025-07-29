@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Interactive User Registration Form</title>
+  <style>
+    body {
+      background-color: rgb(6, 6, 6);
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h1 {
+      color: rgb(231, 227, 227);
+      text-align: center;
+    }
+
+    form {
+      color: rgb(236, 233, 233);
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      background-color: #1c1c1c;
+      border-radius: 10px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    .strength {
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .weak {
+      color: red;
+    }
+
+    .medium {
+      color: orange;
+    }
+
+    .strong {
+      color: green;
+    }
+
+    .gender,
+    .terms {
+      margin-top: 10px;
+      margin-bottom: 15px;
+    }
+
+    .gender label,
+    .terms label {
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Registration Form</h1>
+
+  <form>
+    <label for="FullName">Full Name:</label>
+    <input type="text" id="FullName" name="FullName" required>
+
+    <label for="email">Email Address:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required oninput="checkStrength()">
+
+    <div id="strengthMessage" class="strength"></div>
+
+    <label for="confirm_password">Confirm Password:</label>
+    <input type="password" id="confirm_password" name="confirm-password" required>
+
+    <div class="gender">
+      <label>Gender:</label>
+      <input type="radio" id="male" name="gender" value="Male" required>
+      <label for="male">Male</label>
+
+      <input type="radio" id="female" name="gender" value="Female">
+      <label for="female">Female</label>
+    </div>
+
+    <div class="terms">
+      <input type="checkbox" id="terms" name="terms" required>
+      <label for="terms">I agree to the terms and conditions</label>
+    </div>
+
+    <button type="submit">Register</button>
+  </form>
+
+  <script>
+    function checkStrength() {
+      const password = document.getElementById("password").value;
+      const strengthMessage = document.getElementById("strengthMessage");
+
+      let strength = "";
+      let className = "";
+
+      if (password.length < 6) {
+        strength = "Weak";
+        className = "weak";
+      } else if (password.length < 10) {
+        strength = "Medium";
+        className = "medium";
+      } else {
+        strength = "Strong";
+        className = "strong";
+      }
+
+      strengthMessage.textContent = "Password Strength: " + strength;
+      strengthMessage.className = "strength " + className;
+    }
+  </script>
+</body>
+</html>
