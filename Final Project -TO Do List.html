@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple To-Do List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ce0e48 0%, #100c86 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        #taskInput {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        #taskInput:focus {
+            border-color: #667eea;
+        }
+
+        #addBtn {
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+
+        #addBtn:hover {
+            transform: translateY(-2px);
+        }
+
+        #addBtn:active {
+            transform: translateY(0);
+        }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            background: #f8f9fa;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+            border-left-color: #28a745;
+        }
+
+        .task-item.completed .task-text {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+
+        .task-text {
+            flex: 1;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .complete-btn, .delete-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .complete-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .complete-btn:hover {
+            background: #218838;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 40px 20px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .task-item {
+            animation: slideIn 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 My To-Do List</h1>
+        
+        <div class="input-container">
+            <input type="text" id="taskInput" placeholder="Add a new task..." maxlength="100">
+            <button id="addBtn">Add Task</button>
+        </div>
+        
+        <ul id="taskList" class="task-list">
+            <div class="empty-state">No tasks yet. Add one above!</div>
+        </ul>
+    </div>
+
+    <script>
+        let tasks = [];
+        let taskIdCounter = 1;
+
+        const taskInput = document.getElementById('taskInput');
+        const addBtn = document.getElementById('addBtn');
+        const taskList = document.getElementById('taskList');
+
+        function addTask() {
+            const taskText = taskInput.value.trim();
+            
+            if (taskText === '') {
+                alert('Please enter a task!');
+                return;
+            }
+
+            const task = {
+                id: taskIdCounter++,
+                text: taskText,
+                completed: false
+            };
+
+            tasks.push(task);
+            taskInput.value = '';
+            renderTasks();
+        }
+
+        function toggleTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                renderTasks();
+            }
+        }
+
+        function deleteTask(taskId) {
+            tasks = tasks.filter(t => t.id !== taskId);
+            renderTasks();
+        }
+
+        function renderTasks() {
+            taskList.innerHTML = '';
+
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<div class="empty-state">No tasks yet. Add one above!</div>';
+                return;
+            }
+
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = `task-item ${task.completed ? 'completed' : ''}`;
+                
+                li.innerHTML = `
+                    <span class="task-text">${task.text}</span>
+                    <div class="task-actions">
+                        <button class="complete-btn" onclick="toggleTask(${task.id})">
+                            ${task.completed ? 'Undo' : 'Done'}
+                        </button>
+                        <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
+                    </div>
+                `;
+                
+                taskList.appendChild(li);
+            });
+        }
+
+        // Event listeners
+        addBtn.addEventListener('click', addTask);
+        
+        taskInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+
+        // Initialize
+        renderTasks();
+    </script>
+</body>
+</html>
